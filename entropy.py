@@ -1,5 +1,5 @@
 import math
-import scipy
+import itertools
 import matplotlib.pyplot as plt
 from scipy.stats import *
 
@@ -81,9 +81,30 @@ class Test:
                     probability = distributions.poisson.pmf(j, T[i]) * distributions.poisson.pmf(self.data[i], j)**count
                     probability_list.append(probability)
                 distribution_y[i] = probability_list
+        distribution_y = self.normalize(distribution_y)
+        for i in itertools.combinations(distribution_y.keys(), 2):
+            self.comparison(distribution_y, i[0], i[1])
+        return distribution_x, distribution_y
 
-        return distribution_x, self.normalize(distribution_y)
-        
+    def comparison(self, data, first, second): # data is usually distribution_y, first is the first object to compare, second is the second object to compare
+        first_index = len(data[first])
+        second_index = len(data[second])
+        first_bigger = 0
+        second_bigger = 0
+        tie = 0
+        s_i = 0
+        for f_i in range(0, first_index):
+            for s_i in range(0, second_index):
+                if  f_i > s_i:
+                    first_bigger += data[first][f_i] * data[second][s_i]
+                elif f_i < s_i:
+                    second_bigger += data[first][f_i] * data[second][s_i]
+                else:
+                    tie += data[first][f_i] * data[second][s_i]
+                s_i += 1
+            f_i += 1
+
+        print '%s: %f, %s: %f, tie: %f'%(first, first_bigger, second, second_bigger, tie)
 
     def makeGraph(self, update, count = 1):
         distribution_x, distribution_y = self.poisson(update, count)
@@ -107,6 +128,8 @@ class Test:
         ax7.bar(distribution_x[('C', 'A')], distribution_y[('C', 'A')])
         ax8.bar(distribution_x[('C', 'B')], distribution_y[('C', 'B')])
         ax9.bar(distribution_x[('C', 'C')], distribution_y[('C', 'C')])
+        ax7.set_xlim([0, 20])
+        ax9.set_xlim([700, 750])
         plt.show()
 
 
@@ -114,7 +137,6 @@ class Test:
 
 if __name__ == '__main__':            
     test = Test(O, D, fee, data)
-    test.makeGraph(False)
     test.makeGraph(True)
     test.makeGraph(True, 2)
 
