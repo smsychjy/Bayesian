@@ -60,7 +60,7 @@ class Test:
             data[i] = list
         return data
 
-    def poisson(self, update):
+    def poisson(self, update, count):
         T = self.calT()
         distribution_x = {}
         distribution_y = {}
@@ -78,15 +78,15 @@ class Test:
             for i in distribution_x.keys():
                 probability_list = []
                 for j in distribution_x[i]:
-                    probability = distributions.poisson.pmf(j, T[i]) * distributions.poisson.pmf(self.data[i], j)
+                    probability = distributions.poisson.pmf(j, T[i]) * distributions.poisson.pmf(self.data[i], j)**count
                     probability_list.append(probability)
                 distribution_y[i] = probability_list
 
         return distribution_x, self.normalize(distribution_y)
         
 
-    def makeGraph(self, update):
-        distribution_x, distribution_y = self.poisson(update)
+    def makeGraph(self, update, count = 1):
+        distribution_x, distribution_y = self.poisson(update, count)
         fig = plt.figure()
         ax1 = fig.add_subplot(3, 3, 1)
         ax2 = fig.add_subplot(3, 3, 2)
@@ -98,15 +98,15 @@ class Test:
         ax8 = fig.add_subplot(3, 3, 8)
         ax9 = fig.add_subplot(3, 3, 9)
 
-        ax1.plot(distribution_x[('A', 'A')], distribution_y[('A', 'A')])
-        ax2.plot(distribution_x[('A', 'B')], distribution_y[('A', 'B')])
-        ax3.plot(distribution_x[('A', 'C')], distribution_y[('A', 'C')])
-        ax4.plot(distribution_x[('B', 'A')], distribution_y[('B', 'A')])
-        ax5.plot(distribution_x[('B', 'B')], distribution_y[('B', 'B')])
-        ax6.plot(distribution_x[('B', 'C')], distribution_y[('B', 'C')])
-        ax7.plot(distribution_x[('C', 'A')], distribution_y[('C', 'A')])
-        ax8.plot(distribution_x[('C', 'B')], distribution_y[('C', 'B')])
-        ax9.plot(distribution_x[('C', 'C')], distribution_y[('C', 'C')])
+        ax1.bar(distribution_x[('A', 'A')], distribution_y[('A', 'A')])
+        ax2.bar(distribution_x[('A', 'B')], distribution_y[('A', 'B')])
+        ax3.bar(distribution_x[('A', 'C')], distribution_y[('A', 'C')])
+        ax4.bar(distribution_x[('B', 'A')], distribution_y[('B', 'A')])
+        ax5.bar(distribution_x[('B', 'B')], distribution_y[('B', 'B')])
+        ax6.bar(distribution_x[('B', 'C')], distribution_y[('B', 'C')])
+        ax7.bar(distribution_x[('C', 'A')], distribution_y[('C', 'A')])
+        ax8.bar(distribution_x[('C', 'B')], distribution_y[('C', 'B')])
+        ax9.bar(distribution_x[('C', 'C')], distribution_y[('C', 'C')])
         plt.show()
 
 
@@ -114,7 +114,9 @@ class Test:
 
 if __name__ == '__main__':            
     test = Test(O, D, fee, data)
+    test.makeGraph(False)
     test.makeGraph(True)
+    test.makeGraph(True, 2)
 
 
             
