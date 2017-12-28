@@ -15,7 +15,7 @@ data = {('A', 'A'): 50.0, ('A', 'B'): 20.0, ('A', 'C'): 100.0,
        ('B', 'A'): 20.0, ('B', 'B'): 7.0, ('B', 'C'): 6.0,
        ('C', 'A'): 1.0, ('C', 'B'): 8.0, ('C', 'C'): 1000.0}
 
-class Test:
+class Gravity:
     def __init__(self, O, D, fee, data):
         self.O = O
         self.D = D
@@ -106,9 +106,21 @@ class Test:
 
         print '%s: %f, %s: %f, tie: %f'%(first, first_bigger, second, second_bigger, tie)
 
-    def makeGraph(self, update, count = 1):
-        distribution_x, distribution_y = self.poisson(update, count)
+class Graph:
+    def __init__(self, O, D, fee, data, update, count = 1):
+        self.O = O
+        self.D = D
+        self.fee = fee
+        self.data = data
+        self.update = update
+        self.count = count
+
+    def makeGraph(self):
+        gravity = Gravity(self.O, self.D, self.fee, self.data)
+        distribution_x, distribution_y = gravity.poisson(self.update, self.count)
+
         fig = plt.figure()
+
         ax1 = fig.add_subplot(3, 3, 1)
         ax2 = fig.add_subplot(3, 3, 2)
         ax3 = fig.add_subplot(3, 3, 3)
@@ -132,13 +144,9 @@ class Test:
         ax9.set_xlim([700, 750])
         plt.show()
 
-
-                
-
-if __name__ == '__main__':            
-    test = Test(O, D, fee, data)
-    test.makeGraph(True)
-    test.makeGraph(True, 2)
+if __name__ == '__main__':
+    graph = Graph(O, D, fee, data, True)
+    graph.makeGraph()
 
 
             
